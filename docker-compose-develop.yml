@@ -51,7 +51,6 @@ services:
         - DISABLE_DEFAULT_SERVER=1
         - APP_DEBUG=true
         - APP_ENV=local
-        - APP_RUNNING_IN_CONSOLE=false
         - LARAVELS_HANDLE_STATIC=true
         - LARAVELS_INOTIFY_RELOAD=true
         - LARAVELS_WORKER_NUM=2

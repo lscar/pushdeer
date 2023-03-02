@@ -9,12 +9,16 @@ fi
 if [ -e '/app/.env' ]; then
   echo 'Config file initialized'
 else
-  cd /app
-  cp .env.example .env
-  php artisan jwt:secret --force
-  php artisan key:generate
-  php artisan migrate --force
+  cp /app/.env.example /app/.env
+  # 设置秘钥
+  php /app/artisan jwt:secret --force
+  php /app/artisan key:generate
+  # 数据迁移
+  php /app/artisan migrate --force
 fi
+
+# 清理优化
+php /app/artisan optimize:clear
 
 if [ -e '/app/docker/push/c.pem' ]; then
   echo 'ios pem file exist'
@@ -28,8 +32,4 @@ else
   openssl pkcs12 -in /app/docker/push/cc.p12 -passin pass:64wtMhU4mULj -out /app/docker/push/cc.pem -passout pass:64wtMhU4mULj
 fi
 
-if [ -e '/etc/supervisor/conf.d/supervisord-pushdeer.conf' ]; then
-  echo 'supervisord file exist'
-else
-  cp /app/docker/supervisord.conf /etc/supervisor/conf.d/supervisord-pushdeer.conf
-fi
+enable-supervisord-program.sh pushdeer

@@ -6,7 +6,6 @@ use App\Models\PushDeerDevice;
 use App\Models\PushDeerMessage;
 use Exception;
 use Log;
-use Pushok\Client;
 use Pushok\Notification;
 use Pushok\Payload\Alert;
 use Pushok\Payload\Sound;
@@ -16,6 +15,13 @@ use Str;
 
 class ApnService implements PushService
 {
+    /**
+     * @param PushDeerDevice $device
+     * @param PushDeerMessage $message
+     * @param int $tries
+     * @return bool
+     * @throws Exception
+     */
     public function send(PushDeerDevice $device, PushDeerMessage $message, int $tries = 1): bool
     {
         //https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification
@@ -39,6 +45,9 @@ class ApnService implements PushService
             } catch (Exception $e) {
                 if (!Str::contains($e->getMessage(), 'timed out')) {
                     Log::warning($e->getMessage(), $e->getTrace());
+                }
+                if ($try >= $tries) {
+                    throw $e;
                 }
             }
         } while ($try < $tries);

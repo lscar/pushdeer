@@ -78,7 +78,6 @@ class PushDeerUserService
 
     public function loginByApple(string $appleId, string $email): string
     {
-        $this->message->addMessage(ReturnCode::AUTH, 'test test test');
         /**
          * @var PushDeerUser $pdUser
          */
