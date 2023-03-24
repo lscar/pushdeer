@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
+use Eloquent;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,8 +21,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
- * @property BelongsTo $user
- * @property HasMany $userDevices
+ * @property PushDeerUser $user
+ * @property Collection $userDevices
+ * @property Collection $userMessages
  *
  * @method static \Illuminate\Database\Eloquent\Builder|PushDeerKey newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PushDeerKey newQuery()
@@ -42,13 +46,23 @@ class PushDeerKey extends Model
         'name',
     ];
 
+    protected function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
     public function user(): BelongsTo
     {
-        return $this->belongsTo(PushDeerUser::class, 'id', 'uid');
+        return $this->belongsTo(PushDeerUser::class, 'uid', 'id');
     }
 
     public function userDevices(): HasMany
     {
         return $this->hasMany(PushDeerDevice::class, 'uid', 'uid');
+    }
+
+    public function userMessages(): HasMany
+    {
+        return $this->hasMany(PushDeerMessage::class, 'pushkey_name', 'key');
     }
 }

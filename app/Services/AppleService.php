@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Http\ReturnCode;
 use AppleSignIn\ASDecoder;
-use JetBrains\PhpStorm\ArrayShape;
 
 class AppleService
 {
@@ -13,11 +12,11 @@ class AppleService
 
     }
 
-    #[ArrayShape([
-        'email' => 'string',
-        'uid'   => 'string',
-    ])]
-    public function getUserInfo($code): array
+    /**
+     * @param string $code
+     * @return array{email: string, uid: string}
+     */
+    public function getUserInfo(string $code): array
     {
         if ($this->message->messages()->isNotEmpty()) {
             $this->message->cleanMessage();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\ReturnCode;
 use App\Services\PushDeerMessageService;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -24,7 +25,12 @@ class PushDeerMessageController extends Controller
     public function push(Request $request)
     {
         $validated = $request->validate([
-            'pushkey' => ['string', 'required'],
+            'pushkey' => ['string', 'required', function (string $attribute, string $value, Closure $fail) {
+                $number = 2;
+                if (count(explode(',', $value)) > $number) {
+                    $fail(trans('validation.max.array', ['attribute' => $attribute, 'max' => $number]));
+                }
+            },],
             'text'    => ['string', 'required'],
             'desp'    => ['string', 'nullable'],
             'type'    => ['string', 'nullable'],

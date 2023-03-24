@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
+use Eloquent;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,8 +24,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
- * @property BelongsTo $user
- * @property HasMany $userKeys
+ * @property PushDeerUser $user
+ * @property Collection $userKeys
  *
  * @method static \Illuminate\Database\Eloquent\Builder|PushDeerDevice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PushDeerDevice newQuery()
@@ -49,13 +52,14 @@ class PushDeerDevice extends Model
         'is_clip',
     ];
 
-//    protected $casts = [
-//        'is_clip' => 'boolean',
-//    ];
+    protected function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(PushDeerUser::class, 'id', 'uid');
+        return $this->belongsTo(PushDeerUser::class, 'uid', 'id');
     }
 
     public function userKeys(): HasMany
@@ -71,5 +75,13 @@ class PushDeerDevice extends Model
     public function routeNotificationForApnClip(): string
     {
         return $this->device_id;
+    }
+
+    public static function getIsClipOptions(): array
+    {
+        return [
+            1 => '是',
+            0 => '否',
+        ];
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
+use Eloquent;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,9 +25,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property Carbon|null $updated_at
  * @property string|null $simple_token
  *
- * @property HasMany $userDevices
- * @property HasMany $userKeys
- * @property HasMany $userMessages
+ * @property Collection $userDevices
+ * @property Collection $userKeys
+ * @property Collection $userMessages
  *
  * @method static \Illuminate\Database\Eloquent\Builder|PushDeerUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PushDeerUser newQuery()
@@ -61,8 +64,14 @@ class PushDeerUser extends Authenticatable implements JWTSubject
                  * @var PushDeerUser $model
                  */
                 $model->simple_token = sprintf('SP%dP%s', $model->id, md5(uniqid(rand(), true)));
+                $model->save();
             }
         );
+    }
+
+    protected function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->format('Y-m-d H:i:s');
     }
 
     public function getAuthPassword(): string
@@ -104,5 +113,13 @@ class PushDeerUser extends Authenticatable implements JWTSubject
     public function userKeys(): HasMany
     {
         return $this->hasMany(PushDeerKey::class, 'uid', 'id');
+    }
+
+    public static function getLevelOptions(): array
+    {
+        return [
+            1 => '启用',
+            0 => '禁用',
+        ];
     }
 }

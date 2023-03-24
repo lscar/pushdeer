@@ -28,39 +28,33 @@ class ApnServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ApnAppAuthProvider::class, function () {
-            return Certificate::create(Arr::except(config('services.apn'), 'production')
+            return Certificate::create(Arr::except(config('services.apn.app'), 'production')
             );
         });
         $this->app->singleton(ApnClipAuthProvider::class, function () {
-            return Certificate::create(Arr::except(config('services.apn_clip'), 'production'));
+            return Certificate::create(Arr::except(config('services.apn.clip'), 'production'));
         });
 
         $this->app->bind(ApnAppClient::class, function () {
-            return cache()->get(ApnAppClient::class);
-        });
-        $this->app->resolving(ApnAppClient::class, function () {
-            cache()->remember(
+            return cache()->remember(
                 ApnAppClient::class,
                 now()->addMinutes(static::CACHE_MINUTES)->timestamp,
                 function () {
                     return new Client(
                         app()->make(ApnAppAuthProvider::class),
-                        config('services.apn.production')
+                        config('services.apn.app.production')
                     );
                 });
         });
 
         $this->app->bind(ApnClipClient::class, function () {
-            return cache()->get(ApnClipClient::class);
-        });
-        $this->app->resolving(ApnClipClient::class, function (): void {
-            cache()->remember(
+            return cache()->remember(
                 ApnClipClient::class,
                 now()->addMinutes(static::CACHE_MINUTES)->timestamp,
                 function () {
                     return new Client(
                         app()->make(ApnClipAuthProvider::class),
-                        config('services.apn_clip.production')
+                        config('services.apn.clip.production')
                     );
                 });
         });
