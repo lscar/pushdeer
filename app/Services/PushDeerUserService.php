@@ -128,7 +128,7 @@ class PushDeerUserService
             $this->message->addMessage(ReturnCode::AUTH, '账号已被禁用');
         }
 
-        return Auth::setTTL(86400 * 365)->attempt([
+        return Auth::setTTL(86400 * 30)->attempt([
             'email'    => $pdUser->email,
             'password' => $pdUser->email,
         ]);
@@ -150,7 +150,7 @@ class PushDeerUserService
             $this->message->addMessage(ReturnCode::AUTH, '账号已被禁用');
         }
 
-        return Auth::setTTL(86400 * 365)->attempt([
+        return Auth::setTTL(86400 * 30)->attempt([
             'email'    => $pdUser->email,
             'password' => $pdUser->email,
         ]);

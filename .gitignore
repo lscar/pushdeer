@@ -16,7 +16,7 @@ public_html/storage
 public_html/hot
 
 storage/laravels.conf
-storage/laravels.pid
+storage/*.pid
 .env
 Homestead.yaml
 Homestead.json
@@ -32,6 +32,8 @@ app/Http/Controllers/TestController.php
 
 # Key
 docker/push/*.pem
+docker/push/*.tmp
+docker/push/*.bak
 
 # 辅助文件
 .DS_Store

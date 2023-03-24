@@ -13,7 +13,7 @@ class CleanOldPush extends Command
      *
      * @var string
      */
-    protected $signature = 'app:cleanpush';
+    protected $signature = 'app:clean-old-push';
 
     /**
      * The console command description.

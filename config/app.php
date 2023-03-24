@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
@@ -167,7 +167,6 @@ return [
          */
         Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -178,6 +177,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ApnServiceProvider::class,
+        App\Providers\RabbitMQProvider::class,
 
     ],
 

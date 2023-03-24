@@ -1,24 +1,72 @@
 version: '3.8'
 services:
-  mariadb:
-    image: 'mariadb:10'
+#  elasticsearch:
+#    image: 'bitnami/elasticsearch:latest'
+#    healthcheck:
+#      test: [ 'CMD-SHELL', 'curl --silent --fail localhost:9200/_cluster/health || exit 1' ]
+#      interval: 5s
+#      timeout: 5s
+#      start_period: 10s
+#      retries: 3
+#    ports:
+#      - '9200:9200'
+#    volumes:
+#      - 'elasticsearch_data:/bitnami/elasticsearch/data'
+#  kibana:
+#    image: 'bitnami/kibana:latest'
+#    healthcheck:
+#      test: [ 'CMD-SHELL', 'curl --silent --fail localhost:5601 || exit 1' ]
+#      interval: 5s
+#      timeout: 5s
+#      start_period: 10s
+#      retries: 3
+#    depends_on:
+#      elasticsearch:
+#        condition: service_healthy
+#    environment:
+#      - KIBANA_ELASTICSEARCH_URL=elasticsearch
+#    ports:
+#      - '5601:5601'
+#    volumes:
+#      - 'kibana_data:/bitnami/kibana'
+  rabbitmq:
+    image: 'bitnami/rabbitmq:latest'
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "--silent","--password=theVeryp@ssw0rd" ]
+      test: [ 'CMD', 'rabbitmq-diagnostics', 'check_port_connectivity' ]
+      interval: 5s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    environment:
+      - RABBITMQ_USERNAME=pushdeer
+      - RABBITMQ_PASSWORD=theVeryp@ssw0rd
+#      - RABBITMQ_PLUGINS=rabbitmq_delayed_message_exchange
+#      - RABBITMQ_COMMUNITY_PLUGINS=https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez
+    ports:
+      - '15672:15672'
+    volumes:
+      - 'rabbitmq_data:/bitnami/rabbitmq/mnesia'
+  mariadb:
+    image: 'bitnami/mariadb:latest'
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', 'ping', '--silent', '--password=theVeryp@ssw0rd' ]
       interval: 5s
       timeout: 5s
       start_period: 5s
       retries: 3
-    volumes:
-      - 'mariadb_data:/var/lib/mysql'
     environment:
-      - MYSQL_ROOT_PASSWORD=theVeryp@ssw0rd
-      - MYSQL_DATABASE=pushdeer
+      - MARIADB_DATABASE=pushdeer
+      - MARIADB_USER=pushdeer
+      - MARIADB_PASSWORD=theVeryp@ssw0rd
+      - MARIADB_ROOT_PASSWORD=theVeryp@ssw0rd
     ports:
       - '3306:3306'
+    volumes:
+      - 'mariadb_data:/bitnami/mariadb'
   redis:
-    image: 'redis:7'
+    image: 'bitnami/redis:latest'
     healthcheck:
-      test: [ "CMD", "redis-cli","ping" ]
+      test: [ 'CMD', 'redis-cli','ping' ]
       interval: 5s
       timeout: 5s
       start_period: 5s
@@ -31,13 +79,8 @@ services:
     build:
       context: .
       dockerfile: './docker/develop/Dockerfile'
-    volumes:
-      - './:/app'
-    ports:
-      - '5200:5200'
-    working_dir: '/app'
     healthcheck:
-      test: [ "CMD", "php", "/app/bin/laravels", "info" ]
+      test: [ 'CMD-SHELL', 'curl --silent --fail localhost:5200 || exit 1' ]
       interval: 5s
       timeout: 5s
       start_period: 5s
@@ -47,12 +90,17 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+#      elasticsearch:
+#        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
         - DISABLE_DEFAULT_SERVER=1
         - APP_DEBUG=true
         - APP_ENV=local
         - LARAVELS_HANDLE_STATIC=true
         - LARAVELS_INOTIFY_RELOAD=true
+        - LARAVELS_TIMER=false
         - LARAVELS_WORKER_NUM=2
         - LARAVELS_TASK_WORKER_NUM=4
         - TELESCOPE_ENABLED=true
@@ -60,5 +108,13 @@ services:
         - APN_CERTIFICATE_SECRET=64wtMhU4mULj
         - APN_BUNDLE_ID_APP=com.pushdeer.self.ios
         - APN_BUNDLE_ID_CLIP=com.pushdeer.self.ios.Clip
+    ports:
+      - '5200:5200'
+    volumes:
+      - './:/app'
+    working_dir: '/app'
 volumes:
+#  elasticsearch_data:
+#  kibana_data:
   mariadb_data:
+  rabbitmq_data:

@@ -23,8 +23,6 @@ use Illuminate\Support\Facades\Route;
 
 // 测试
 Route::match(['get', 'post'], '/test', [\App\Http\Controllers\TestController::class, 'test']);
-// 日志
-Route::get('logs', [\App\Http\Controllers\LogViewerController::class, 'index']);
 
 // 推送消息
 Route::match(['get', 'post'], '/message/push', [PushDeerMessageController::class, 'push']);

@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Events\DeviceNotificationProcessed;
 use App\Http\ReturnCode;
 use App\Models\PushDeerDevice;
 use App\Models\PushDeerKey;
 use App\Models\PushDeerMessage;
 use App\Models\PushDeerUser;
-use Hhxsv5\LaravelS\Swoole\Task\Event;
+use App\Models\QueueExchangeEnum;
+use App\Models\RoutingKeyEnum;
 use Illuminate\Support\Facades\Auth;
 use Str;
 
@@ -43,7 +43,12 @@ class PushDeerMessageService
         $keys = PushDeerKey::whereIn('key', $pushKeys)->get();
         $result = [];
 
-        $keys->each(function (PushDeerKey $key) use (&$messages, $data, &$result) {
+        $queueMessages = [];
+        $keys->each(function (PushDeerKey $key) use (&$data, &$queueMessages) {
+            if ($key->userDevices->count() < 1) {
+                $this->message->addMessage(ReturnCode::ARGS, $key->name . ' 没有可用的设备，请先注册');
+            }
+
             $message = new PushDeerMessage();
             $message->uid = $key->uid;
             $message->text = $data['text'] ?? '';
@@ -54,20 +59,37 @@ class PushDeerMessageService
             $message->save();
 
             $message->text = $message->type == 'image' ? '[图片]' : $message->text;
-            if ($key->userDevices->count() < 1) {
-                $this->message->addMessage(ReturnCode::ARGS, $key->name . ' 没有可用的设备，请先注册');
-            }
-            $key->userDevices->each(function (PushDeerDevice $device) use ($message, &$result) {
-                $success = Event::fire((new DeviceNotificationProcessed($device, $message))->setTries(3));
-                if ($success) {
-                    $result[] = json_encode([
-                        'counts'  => 1,
-                        'logs'    => [],
-                        'success' => 'ok',
-                    ]);
-                }
+            $key->userDevices->each(function (PushDeerDevice $device) use (&$queueMessages, $message) {
+                // 方式一：异步事件，Swoole进程通信
+                // Event::fire((new DeviceNotificationProcessed($device, $message))->setTries(3));
+                $routingKey = match ($device->type) {
+                    'ios'     => $device->is_clip ? RoutingKeyEnum::NOTIFICATION_APN_CLIP : RoutingKeyEnum::NOTIFICATION_APN_APP,
+                    'android' => $device->is_clip ? RoutingKeyEnum::NOTIFICATION_FCM_CLIP : RoutingKeyEnum::NOTIFICATION_FCM_APP,
+                };
+                $queueMessages[$routingKey->value][] = [
+                    'device'  => $device,
+                    'message' => $message,
+                ];
             });
         });
+
+        // 方式二：异步队列，RabbitMQ
+        $queueMessageCount = 0;
+        foreach ($queueMessages as $routingKey => $items) {
+            $queueMessageCount += count($items);
+            app(QueueService::class)->publish(
+                data: $items,
+                exchange: QueueExchangeEnum::NOTIFICATION_EXCHANGE,
+                routingKey: RoutingKeyEnum::from($routingKey)
+            );
+        }
+
+        $result[] = json_encode([
+            'counts'  => $queueMessageCount,
+            'logs'    => [],
+            'success' => 'ok',
+        ]);
+
         $this->message->setData($result);
     }
 

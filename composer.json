@@ -10,18 +10,24 @@
         "ext-pdo": "*",
         "ext-redis": "*",
         "edamov/pushok": "^0.15.3",
+        "elasticsearch/elasticsearch": "^8.6",
+        "encore/laravel-admin": "^1.8",
         "griffinledingham/php-apple-signin": "^1.1",
         "guzzlehttp/guzzle": "^7.4",
         "hhxsv5/laravel-s": "~3.7.0",
         "kreait/laravel-firebase": "^5.1",
+        "laravel-admin-ext/log-viewer": "^1.0",
+        "laravel-admin-ext/scheduling": "^1.2",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "rap2hpoutre/laravel-log-viewer": "^2.3",
+        "php-amqplib/php-amqplib": "^3.5",
         "rookiejin/mipush": "^1.0",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
+        "ext-bcmath": "*",
+        "ext-inotify": "*",
         "barryvdh/laravel-ide-helper": "^2.12",
         "beyondcode/laravel-dump-server": "^1.8",
         "fakerphp/faker": "^1.9.1",
@@ -80,7 +86,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
