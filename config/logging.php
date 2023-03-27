@@ -114,19 +114,19 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
-        'elasticsearch' => [
-            'driver' => 'monolog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'handler' => Monolog\Handler\ElasticsearchHandler::class,
-            'formatter' => Monolog\Formatter\ElasticsearchFormatter::class,
-            'formatter_with' => [
-                'index' => env('ELASTIC_LOGS_INDEX', 'monolog'),
-                'type' => '_doc'
-            ],
-            'handler_with' => [
-                'client' => Elastic\Elasticsearch\ClientBuilder::create()->setHosts([env('ELASTIC_HOST')])->build(),
-            ],
-        ],
+//        'elasticsearch' => [
+//            'driver' => 'monolog',
+//            'level' => env('LOG_LEVEL', 'debug'),
+//            'handler' => Monolog\Handler\ElasticsearchHandler::class,
+//            'formatter' => Monolog\Formatter\ElasticsearchFormatter::class,
+//            'formatter_with' => [
+//                'index' => env('ELASTIC_LOGS_INDEX', 'monolog'),
+//                'type' => '_doc'
+//            ],
+//            'handler_with' => [
+//                'client' => Elastic\Elasticsearch\ClientBuilder::create()->setHosts([env('ELASTIC_HOST')])->build(),
+//            ],
+//        ],
     ],
 
 ];
