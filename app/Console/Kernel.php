@@ -2,12 +2,12 @@
 
 namespace App\Console;
 
-use App\Console\Commands\CleanOldPush;
-use App\Console\Commands\SendNotificationApnApp;
-use App\Console\Commands\SendNotificationApnClip;
-use App\Console\Commands\SendNotificationFcmApp;
-use App\Console\Commands\SendNotificationFcmClip;
-use App\Console\Commands\UpdateApnCertificate;
+use App\Console\Commands\CleanOldPushCommand;
+use App\Console\Commands\SendNotificationApnAppCommand;
+use App\Console\Commands\SendNotificationApnClipCommand;
+use App\Console\Commands\SendNotificationFcmAppCommand;
+use App\Console\Commands\SendNotificationFcmClipCommand;
+use App\Console\Commands\UpdateApnCertificateCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -21,12 +21,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command(SendNotificationFcmApp::class)->everyMinute();
-        $schedule->command(SendNotificationFcmClip::class)->everyMinute();
-        $schedule->command(SendNotificationApnApp::class)->everyMinute();
-        $schedule->command(SendNotificationApnClip::class)->everyMinute();
-        $schedule->command(CleanOldPush::class)->hourly();
-        $schedule->command(UpdateApnCertificate::class)->daily();
+//        $schedule->command(SendNotificationFcmApp::class)->everyMinute();
+//        $schedule->command(SendNotificationFcmClip::class)->everyMinute();
+//        $schedule->command(SendNotificationApnApp::class)->everyMinute();
+//        $schedule->command(SendNotificationApnClip::class)->everyMinute();
+        $schedule->command(CleanOldPushCommand::class)->hourly();
+        $schedule->command(UpdateApnCertificateCommand::class)->daily();
     }
 
     /**

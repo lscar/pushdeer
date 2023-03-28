@@ -7,7 +7,7 @@ use GuzzleHttp\Pool;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Console\Command;
 
-class UpdateApnCertificate extends Command
+class UpdateApnCertificateCommand extends Command
 {
     /**
      * The name and signature of the console command.

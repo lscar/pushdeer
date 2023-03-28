@@ -4,7 +4,6 @@ namespace App\Services\Push;
 
 use App\Models\PushDeerDevice;
 use App\Models\PushDeerMessage;
-use PhpAmqpLib\Message\AMQPMessage;
 
 class PushService implements PushServiceInterface
 {

@@ -2,19 +2,19 @@
 
 namespace App\Events;
 
-use App\Listeners\SendDeviceNotification;
+use App\Listeners\SendNotificationListener;
 use App\Models\PushDeerDevice;
 use App\Models\PushDeerMessage;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 
-class DeviceNotificationProcessed extends Event
+class SendNotificationEvent extends Event
 {
     private PushDeerDevice $device;
     private PushDeerMessage $message;
 
     protected $listeners = [
         // 监听器列表
-        SendDeviceNotification::class,
+        SendNotificationListener::class,
     ];
 
     /**
