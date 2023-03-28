@@ -98,6 +98,7 @@ services:
         - DISABLE_DEFAULT_SERVER=1
         - APP_DEBUG=true
         - APP_ENV=local
+        - ADMIN_HTTPS=false
         - LARAVELS_HANDLE_STATIC=true
         - LARAVELS_INOTIFY_RELOAD=true
         - LARAVELS_TIMER=false

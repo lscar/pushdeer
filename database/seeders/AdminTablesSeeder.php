@@ -160,7 +160,7 @@ class AdminTablesSeeder extends Seeder
             ],
             [
                 'id'        => 9,
-                'parent_id' => 3,
+                'parent_id' => 8,
                 'order'     => 1,
                 'title'     => 'Users',
                 'icon'      => 'fa-users',
@@ -168,7 +168,7 @@ class AdminTablesSeeder extends Seeder
             ],
             [
                 'id'        => 10,
-                'parent_id' => 3,
+                'parent_id' => 8,
                 'order'     => 2,
                 'title'     => 'Devices',
                 'icon'      => 'fa-mobile',
@@ -176,7 +176,7 @@ class AdminTablesSeeder extends Seeder
             ],
             [
                 'id'        => 11,
-                'parent_id' => 3,
+                'parent_id' => 8,
                 'order'     => 3,
                 'title'     => 'Keys',
                 'icon'      => 'fa-key',
@@ -184,7 +184,7 @@ class AdminTablesSeeder extends Seeder
             ],
             [
                 'id'        => 12,
-                'parent_id' => 3,
+                'parent_id' => 8,
                 'order'     => 4,
                 'title'     => 'Messages',
                 'icon'      => 'fa-comments',
