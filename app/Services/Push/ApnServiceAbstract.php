@@ -48,11 +48,10 @@ abstract class ApnServiceAbstract implements PushServiceInterface
      */
     public function send(PushDeerDevice $device, PushDeerMessage $message, int $tries = 1): bool
     {
-        $client = $this->addNotification([
+        $client = $this->addNotification([[
             'message' => $message,
             'device' => $device,
-        ]);
-
+        ]]);
         return $this->executor($client, $tries);
     }
 

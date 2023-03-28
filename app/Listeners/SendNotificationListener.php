@@ -2,30 +2,21 @@
 
 namespace App\Listeners;
 
-use App\Events\DeviceNotificationProcessed;
+use App\Events\SendNotificationEvent;
 use App\Services\Push\ApnAppService;
 use App\Services\Push\ApnClipService;
 use App\Services\Push\FcmAppService;
 use App\Services\Push\FcmClipService;
+use App\Services\Push\PushService;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 
-class SendDeviceNotification extends Listener
+class SendNotificationListener extends Listener
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Handle the event.
      *
-     * @param DeviceNotificationProcessed $event
+     * @param SendNotificationEvent $event
      * @return void
      */
     public function handle(Event $event): void
@@ -36,6 +27,7 @@ class SendDeviceNotification extends Listener
             'ios'     => $device->is_clip ? ApnClipService::class : ApnAppService::class,
             'android' => $device->is_clip ? FcmClipService::class : FcmAppService::class,
         };
-        app($channel)->send($device, $message);
+
+        app(PushService::class, ['service' => app($channel)])->send($device, $message);
     }
 }

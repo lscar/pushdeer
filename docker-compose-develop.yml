@@ -29,23 +29,23 @@ services:
 #      - '5601:5601'
 #    volumes:
 #      - 'kibana_data:/bitnami/kibana'
-  rabbitmq:
-    image: 'bitnami/rabbitmq:latest'
-    healthcheck:
-      test: [ 'CMD', 'rabbitmq-diagnostics', 'check_port_connectivity' ]
-      interval: 5s
-      timeout: 5s
-      start_period: 10s
-      retries: 3
-    environment:
-      - RABBITMQ_USERNAME=pushdeer
-      - RABBITMQ_PASSWORD=theVeryp@ssw0rd
+#  rabbitmq:
+#    image: 'bitnami/rabbitmq:latest'
+#    healthcheck:
+#      test: [ 'CMD', 'rabbitmq-diagnostics', 'check_port_connectivity' ]
+#      interval: 5s
+#      timeout: 5s
+#      start_period: 10s
+#      retries: 3
+#    environment:
+#      - RABBITMQ_USERNAME=pushdeer
+#      - RABBITMQ_PASSWORD=theVeryp@ssw0rd
 #      - RABBITMQ_PLUGINS=rabbitmq_delayed_message_exchange
 #      - RABBITMQ_COMMUNITY_PLUGINS=https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez
-    ports:
-      - '15672:15672'
-    volumes:
-      - 'rabbitmq_data:/bitnami/rabbitmq/mnesia'
+#    ports:
+#      - '15672:15672'
+#    volumes:
+#      - 'rabbitmq_data:/bitnami/rabbitmq/mnesia'
   mariadb:
     image: 'bitnami/mariadb:latest'
     healthcheck:
@@ -92,8 +92,8 @@ services:
         condition: service_healthy
 #      elasticsearch:
 #        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+#      rabbitmq:
+#        condition: service_healthy
     environment:
         - DISABLE_DEFAULT_SERVER=1
         - APP_DEBUG=true
@@ -102,7 +102,7 @@ services:
         - LARAVELS_INOTIFY_RELOAD=true
         - LARAVELS_TIMER=false
         - LARAVELS_WORKER_NUM=2
-        - LARAVELS_TASK_WORKER_NUM=4
+        - LARAVELS_TASK_WORKER_NUM=2
         - TELESCOPE_ENABLED=true
         - TELESCOPE_COMMAND_WATCHER=false
         - APN_CERTIFICATE_SECRET=64wtMhU4mULj
@@ -117,4 +117,4 @@ volumes:
 #  elasticsearch_data:
 #  kibana_data:
   mariadb_data:
-  rabbitmq_data:
+#  rabbitmq_data:

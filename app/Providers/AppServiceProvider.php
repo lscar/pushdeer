@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Console\Commands\SendNotificationApnApp;
-use App\Console\Commands\SendNotificationApnClip;
-use App\Console\Commands\SendNotificationFcmApp;
-use App\Console\Commands\SendNotificationFcmClip;
+use App\Console\Commands\SendNotificationApnAppCommand;
+use App\Console\Commands\SendNotificationApnClipCommand;
+use App\Console\Commands\SendNotificationFcmAppCommand;
+use App\Console\Commands\SendNotificationFcmClipCommand;
 use App\Http\ReturnCode;
 use App\Services\AppleService;
 use App\Services\MessageService;
@@ -13,7 +13,7 @@ use App\Services\Push\ApnAppService;
 use App\Services\Push\ApnClipService;
 use App\Services\Push\FcmAppService;
 use App\Services\Push\FcmClipService;
-use App\Services\Push\PushService;
+use App\Services\Push\PushServiceInterface;
 use App\Services\PushDeerDeviceService;
 use App\Services\PushDeerKeyService;
 use App\Services\PushDeerMessageService;
@@ -87,41 +87,33 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ApnAppService::class, function () {
             return new ApnAppService();
         });
-        $this->app->when(SendNotificationApnApp::class)
-            ->needs(PushService::class)
-            ->give(function () {
-                return $this->app->make(ApnAppService::class);
-            });
+        $this->app->when(SendNotificationApnAppCommand::class)
+            ->needs(PushServiceInterface::class)
+            ->give(ApnAppService::class);
 
         // push-apn-clip
         $this->app->singleton(ApnClipService::class, function () {
             return new ApnClipService();
         });
-        $this->app->when(SendNotificationApnClip::class)
-            ->needs(PushService::class)
-            ->give(function () {
-                return $this->app->make(ApnClipService::class);
-            });
+        $this->app->when(SendNotificationApnClipCommand::class)
+            ->needs(PushServiceInterface::class)
+            ->give(ApnClipService::class);
 
         // push-fcm-app
         $this->app->singleton(FcmAppService::class, function () {
             return new FcmAppService();
         });
-        $this->app->when(SendNotificationFcmApp::class)
-            ->needs(PushService::class)
-            ->give(function () {
-                return $this->app->make(FcmAppService::class);
-            });
+        $this->app->when(SendNotificationFcmAppCommand::class)
+            ->needs(PushServiceInterface::class)
+            ->give(FcmAppService::class);
 
         // push-fcm-clip
         $this->app->singleton(FcmClipService::class, function () {
             return new FcmClipService();
         });
-        $this->app->when(SendNotificationFcmClip::class)
-            ->needs(PushService::class)
-            ->give(function () {
-                return $this->app->make(FcmClipService::class);
-            });
+        $this->app->when(SendNotificationFcmClipCommand::class)
+            ->needs(PushServiceInterface::class)
+            ->give(FcmClipService::class);
 
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\PushDeerMessage;
 use Carbon\Carbon;
 
-class CleanOldPush extends Command
+class CleanOldPushCommand extends Command
 {
     /**
      * The name and signature of the console command.

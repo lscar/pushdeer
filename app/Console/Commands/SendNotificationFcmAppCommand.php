@@ -5,9 +5,9 @@ namespace App\Console\Commands;
 use App\Models\QueueExchangeEnum;
 use Illuminate\Console\Command;
 
-class SendNotificationFcmApp extends Command
+class SendNotificationFcmAppCommand extends Command
 {
-    use SendNotificationTrait;
+    use SendNotificationCommandTrait;
 
     /**
      * The name and signature of the console command.
