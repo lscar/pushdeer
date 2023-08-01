@@ -38,7 +38,7 @@ class ApnServiceProvider extends ServiceProvider
         $this->app->bind(ApnAppClient::class, function () {
             return cache()->remember(
                 ApnAppClient::class,
-                now()->addMinutes(static::CACHE_MINUTES)->timestamp,
+                self::CACHE_MINUTES * 60,
                 function () {
                     return new Client(
                         app()->make(ApnAppAuthProvider::class),
@@ -50,7 +50,7 @@ class ApnServiceProvider extends ServiceProvider
         $this->app->bind(ApnClipClient::class, function () {
             return cache()->remember(
                 ApnClipClient::class,
-                now()->addMinutes(static::CACHE_MINUTES)->timestamp,
+                self::CACHE_MINUTES * 60,
                 function () {
                     return new Client(
                         app()->make(ApnClipAuthProvider::class),
